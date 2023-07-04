@@ -3,6 +3,10 @@
   "displayName": "burn-or-not",
   "description": "Test extension",
   "publisher": "robertohuertasm",
+  "repository": {
+    "type": "git",
+    "url": "https://marketplace.visualstudio.com/items?itemName=robertohuertasm.burn-or-not"
+  },
   "version": "0.0.2",
   "engines": {
     "vscode": "^1.79.0"
