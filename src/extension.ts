@@ -30,15 +30,31 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
+function isDebugMode(): boolean {
+  return process.env.VSCODE_DEBUG_MODE === 'true';
+}
+
+function getBinaryPath(): string {
+  const binName =
+    process.platform === 'win32' ? 'random-binary.exe' : 'random-binary';
+
+  if (isDebugMode()) {
+    return path.join(
+      __dirname,
+      '..',
+      'random-binary',
+      'target',
+      'debug',
+      binName,
+    );
+  } else {
+    return path.join(__dirname, '..', 'bins', binName);
+  }
+}
+
 function executeBinary() {
-  const bin = path.join(
-    __dirname,
-    '..',
-    'random-binary',
-    'target',
-    'release',
-    'random-binary',
-  );
+  const bin = getBinaryPath();
+
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const p = spawn(bin, { env: { NAME: 'burn-or-not' } });
 
