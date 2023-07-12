@@ -44,7 +44,7 @@ function getBinaryPath(): string {
       '..',
       'random-binary',
       'target',
-      'debug',
+      'release',
       binName,
     );
   } else {
