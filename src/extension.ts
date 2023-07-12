@@ -48,7 +48,7 @@ function getBinaryPath(): string {
       binName,
     );
   } else {
-    let prodPath = path.join(__dirname, '..', 'bins');
+    let prodPath = path.join(__dirname, '..', 'bins', 'burn');
     if (platform === 'darwin') {
       prodPath = path.join(prodPath, 'mac');
     }
