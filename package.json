@@ -21,6 +21,10 @@
       {
         "command": "burn-or-not.helloWorld",
         "title": "Burn: Hello"
+      },
+      {
+        "command": "burn-or-not.staticAnalysis",
+        "title": "Burn: Start Static Analysis Server"
       }
     ]
   },
@@ -46,8 +50,5 @@
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "typescript": "^5.1.3"
-  },
-  "dependencies": {
-    "execa": "^7.1.1"
   }
 }

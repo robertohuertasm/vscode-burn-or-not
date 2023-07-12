@@ -2,7 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'node:path';
-const { spawn } = require('node:child_process');
+import { spawn, exec } from 'node:child_process';
+import * as util from 'node:util';
+
+const execPromise = util.promisify(exec);
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -24,7 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
     },
   );
 
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(
+    disposable,
+    vscode.commands.registerCommand('burn-or-not.staticAnalysis', () => {
+      startStaticServer();
+    }),
+  );
 }
 
 // This method is called when your extension is deactivated
@@ -34,7 +42,55 @@ function isDebugMode(): boolean {
   return process.env.VSCODE_DEBUG_MODE === 'true';
 }
 
-function getBinaryPath(): string {
+function executeBinary() {
+  const bin = getBurnBinaryPath();
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const p = spawn(bin, { env: { NAME: 'burn-or-not' } });
+
+  p.stdout.on('data', (data: any) => {
+    console.log(`Burn logs: ${data}`);
+  });
+
+  p.on('close', (code: any) => {
+    console.log(`Binary process exited with code ${code}`);
+  });
+}
+
+async function startStaticServer(): Promise<void> {
+  const bin = await getStaticBinaryPath('datadog-static-analyzer-server');
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const p = spawn(bin, { env: { ROCKET_PORT: '9999' } });
+
+  p.stdout.on('data', (data: any) => {
+    console.log(`Server logs: ${data}`);
+  });
+
+  p.on('close', (code: any) => {
+    console.log(`Server process exited with code ${code}`);
+  });
+}
+
+async function getStaticBinaryPath(name: string): Promise<string> {
+  const platform = process.platform;
+  const binName = platform === 'win32' ? `${name}.exe` : name;
+
+  let prodPath = path.join(__dirname, '..', 'bins', 'static');
+  if (platform === 'darwin') {
+    prodPath = path.join(prodPath, 'mac');
+    // we have to give permissions to this binary
+    // xattr -dr com.apple.quarantine datadog-static-analyzer
+    const { stdout, stderr } = await execPromise(
+      `"xattr" -dr com.apple.quarantine ${path.join(prodPath, binName)}`,
+    );
+    console.log('xattr log:', stdout);
+    console.error('xattr err:', stderr);
+  }
+  return path.join(prodPath, binName);
+}
+
+function getBurnBinaryPath(): string {
   const platform = process.platform;
   const binName = platform === 'win32' ? 'random-binary.exe' : 'random-binary';
 
@@ -54,19 +110,4 @@ function getBinaryPath(): string {
     }
     return path.join(prodPath, binName);
   }
-}
-
-function executeBinary() {
-  const bin = getBinaryPath();
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const p = spawn(bin, { env: { NAME: 'burn-or-not' } });
-
-  p.stdout.on('data', (data: any) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  p.on('close', (code: any) => {
-    console.log(`child process exited with code ${code}`);
-  });
 }
