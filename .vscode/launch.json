@@ -9,7 +9,7 @@
       "name": "Run Extension",
       "type": "extensionHost",
       "env": {
-        "VSCODE_DEBUG_MODE": "false"
+        "VSCODE_DEBUG_MODE": "true"
       },
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],

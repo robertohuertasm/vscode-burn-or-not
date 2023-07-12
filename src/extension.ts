@@ -35,8 +35,8 @@ function isDebugMode(): boolean {
 }
 
 function getBinaryPath(): string {
-  const binName =
-    process.platform === 'win32' ? 'random-binary.exe' : 'random-binary';
+  const platform = process.platform;
+  const binName = platform === 'win32' ? 'random-binary.exe' : 'random-binary';
 
   if (isDebugMode()) {
     return path.join(
@@ -48,7 +48,11 @@ function getBinaryPath(): string {
       binName,
     );
   } else {
-    return path.join(__dirname, '..', 'bins', binName);
+    let prodPath = path.join(__dirname, '..', 'bins');
+    if (platform === 'darwin') {
+      prodPath = path.join(prodPath, 'mac');
+    }
+    return path.join(prodPath, binName);
   }
 }
 
