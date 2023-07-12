@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://marketplace.visualstudio.com/items?itemName=robertohuertasm.burn-or-not"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.79.0"
   },
