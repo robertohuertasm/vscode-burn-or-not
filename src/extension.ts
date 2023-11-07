@@ -32,6 +32,10 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('burn-or-not.staticAnalysis', () => {
       startStaticServer();
     }),
+    vscode.window.onDidChangeVisibleTextEditors((editors) => {
+      const uris = editors.map((editor) => editor.document.uri);
+      vscode.window.showInformationMessage(`Visible URIs: ${uris}`);
+    }),
   );
 }
 
