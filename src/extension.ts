@@ -13,29 +13,15 @@ export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "burn-or-not" is now active!');
-
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand(
-    'burn-or-not.helloWorld',
-    () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage('Hello World from burn-or-not!');
-      executeBinary();
-    },
-  );
+  vscode.window.showInformationMessage('Burn or not is active!');
 
   context.subscriptions.push(
-    disposable,
-    vscode.commands.registerCommand('burn-or-not.staticAnalysis', () => {
-      startStaticServer();
-    }),
-    vscode.window.onDidChangeVisibleTextEditors((editors) => {
-      const uris = editors.map((editor) => editor.document.uri);
-      vscode.window.showInformationMessage(`Visible URIs: ${uris}`);
-    }),
+    vscode.commands.registerCommand(
+      'burn-or-not.helloWorld',
+      () => {
+        vscode.window.showInformationMessage('Hello World from burn-or-not!');
+        executeBinary();
+      },
   );
 }
 
@@ -61,38 +47,6 @@ function executeBinary() {
   });
 }
 
-async function startStaticServer(): Promise<void> {
-  const bin = await getStaticBinaryPath('datadog-static-analyzer-server');
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const p = spawn(bin, { env: { ROCKET_PORT: '9999' } });
-
-  p.stdout.on('data', (data: any) => {
-    console.log(`Server logs: ${data}`);
-  });
-
-  p.on('close', (code: any) => {
-    console.log(`Server process exited with code ${code}`);
-  });
-}
-
-async function getStaticBinaryPath(name: string): Promise<string> {
-  const platform = process.platform;
-  const binName = platform === 'win32' ? `${name}.exe` : name;
-
-  let prodPath = path.join(__dirname, '..', 'bins', 'static');
-  if (platform === 'darwin') {
-    prodPath = path.join(prodPath, 'mac');
-    // we have to give permissions to this binary
-    // xattr -dr com.apple.quarantine datadog-static-analyzer
-    const { stdout, stderr } = await execPromise(
-      `"xattr" -dr com.apple.quarantine ${path.join(prodPath, binName)}`,
-    );
-    console.log('xattr log:', stdout);
-    console.error('xattr err:', stderr);
-  }
-  return path.join(prodPath, binName);
-}
 
 function getBurnBinaryPath(): string {
   const platform = process.platform;
