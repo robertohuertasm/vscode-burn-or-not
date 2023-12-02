@@ -6,12 +6,29 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Tests Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "env": {
+        "VSCODE_DEBUG_MODE": "true",
+        "DISPLAY": ":99.0"
+      },
+      "testConfiguration": "${workspaceFolder}/.vscode-test.js",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}"
+        // "--extensionTestsPath=${workspaceFolder}/libs/shell/dist/tests.runner/"
+      ],
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "${defaultBuildTask}"
+    },
+    {
       "name": "Run Extension",
       "type": "extensionHost",
-      "env": {
-        "VSCODE_DEBUG_MODE": "true"
-      },
       "request": "launch",
+      "env": {
+        "VSCODE_DEBUG_MODE": "true",
+        "DISPLAY": ":99.0"
+      },
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}"
@@ -20,7 +37,8 @@
       "name": "Run Extension Without Extensions",
       "type": "extensionHost",
       "env": {
-        "VSCODE_DEBUG_MODE": "true"
+        "VSCODE_DEBUG_MODE": "true",
+        "DISPLAY": ":99.0"
       },
       "request": "launch",
       "args": [

@@ -2,6 +2,9 @@ import { defineConfig } from '@vscode/test-cli';
 
 export default defineConfig([
   {
+    env: {
+      DISPLAY: ':99.0',
+    },
     // Required: Glob of files to load (can be an array and include absolute paths).
     files: 'out/test/**/*.test.js',
     // Optional: Version to use, same as the API above, defaults to stable
