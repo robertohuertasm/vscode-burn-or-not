@@ -18,6 +18,7 @@ export default defineConfig([
     mocha: {
       // preload: `./out/test-utils.js`,
       timeout: 20000,
+      ui: 'bdd'
     },
   },
   // you can specify additional test configurations if necessary
